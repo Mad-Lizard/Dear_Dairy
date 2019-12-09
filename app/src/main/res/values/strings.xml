@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Dear Dairy</string>
+    <string name="hint_text_input">Оставьте воспоминания</string>
+    <string name="save_button">Сохранить</string>
+    <string name="title_selection">Темы</string>
+    <string name="add_title_dialog">Добавьте тему дневника</string>
+    <string name="save_title">Сохранить</string>
+    <string name="title_hint">Их может быть на больше 7</string>
+    <string name="app_key">s5nqtocq3s8y5zz</string>
+    <string name="dropbox_sync">Синхронизировать с Dropbox</string>
+    <string name="dropbox_login">Войти в аккаунт Dropbox</string>
+    <string name="dropbox_backup">Сохранить данные</string>
+    <string name="dropbox_restore">Восстановить данные</string>
+    <string name="backup_file_name">backup-dairy.db</string>
+    <string name="switch_main">Редактирование/просмотр</string>
+    <string name="dropbox_hello">Вы успешно вошли в свой аккаунт и синхронизоровали данные.</string>
+
+</resources>
