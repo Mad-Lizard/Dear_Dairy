@@ -7,19 +7,20 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 
 import com.dropbox.core.android.Auth;
 import com.hfad.deardairy.Db.WorkManager.BackupWorker;
+import com.hfad.deardairy.Db.WorkManager.DropboxRemoteDb;
 
 //Base class for all activities that require auth token
 public abstract class DropboxActivity extends AppCompatActivity {
 
     //every time, when activity gets focus...
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
-
+    protected void onResume() {
+        super.onResume();
         SharedPreferences preferences = getSharedPreferences("dropbox", MODE_PRIVATE);
         String accessToken = preferences.getString("access-token", null);
         if(accessToken == null) {
@@ -31,20 +32,11 @@ public abstract class DropboxActivity extends AppCompatActivity {
         } else {
             DropboxClientFactory.init(accessToken);
         }
-
-        String uid = Auth.getUid();
-        String storeUid = preferences.getString("user-uid", null);
-        if(uid != null && !uid.equals(storeUid)) {
-            preferences.edit().putString("user-uid", uid).apply();
+        Boolean dropboxSync = preferences.getBoolean("dropboxSync", false);
+        if (dropboxSync) {
+            DropboxRemoteDb.downloadDb();
         }
     }
-
-//    private void initAndLoadData(String accessToken) {
-//        DropboxClientFactory.init(accessToken);
-//        loadData();
-//    }
-
-   // protected abstract void loadData();
 
     public boolean hasToken() {
         SharedPreferences preferences = getSharedPreferences("dropbox", MODE_PRIVATE);

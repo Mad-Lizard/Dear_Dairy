@@ -29,7 +29,6 @@ public class BackupWorker extends Worker {
     @Override
     public Result doWork() {
         final String dbPath = getApplicationContext().getDatabasePath(DatabaseHelper.DB_NAME).getAbsolutePath();
-        Log.v("path worker", dbPath);
         final File db = new File(dbPath);
         DbxClientV2 client = DropboxClientFactory.getClient();
         try (FileInputStream is = new FileInputStream(db);) {

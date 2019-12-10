@@ -10,6 +10,7 @@ import com.hfad.deardairy.Db.DAO.DataDao;
 import com.hfad.deardairy.Db.DatabaseHelper;
 import com.hfad.deardairy.Db.Models.DataModel;
 import com.hfad.deardairy.Db.Models.DataWithTitle;
+import com.hfad.deardairy.Db.WorkManager.DropboxRemoteDb;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -96,6 +97,7 @@ public class DataRepository {
                 mDataDao.insert(dataModel);
             }
         });
+        DropboxRemoteDb.saveDb();
     }
 
     public void update(final DataModel dataModel) {
@@ -105,6 +107,7 @@ public class DataRepository {
                 mDataDao.update(dataModel);
             }
         });
+        DropboxRemoteDb.saveDb();
     }
 
     public void deleteData(final int titleId, final String date) {
@@ -114,6 +117,7 @@ public class DataRepository {
                 mDataDao.deleteData(titleId, date);
             }
         });
+        DropboxRemoteDb.saveDb();
     }
 
     //method get() waits for results of query through Future if necessary.

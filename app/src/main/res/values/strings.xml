@@ -8,6 +8,7 @@
     <string name="title_hint">Их может быть на больше 7</string>
     <string name="app_key">s5nqtocq3s8y5zz</string>
     <string name="dropbox_sync">Синхронизировать с Dropbox</string>
+    <string name="dropbox_save">Сохранять на Dropbox</string>
     <string name="dropbox_login">Войти в аккаунт Dropbox</string>
     <string name="dropbox_backup">Сохранить данные</string>
     <string name="dropbox_restore">Восстановить данные</string>

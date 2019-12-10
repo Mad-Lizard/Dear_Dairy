@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import com.hfad.deardairy.Db.DAO.TitleDao;
 import com.hfad.deardairy.Db.DatabaseHelper;
 import com.hfad.deardairy.Db.Models.TitleModel;
+import com.hfad.deardairy.Db.WorkManager.DropboxRemoteDb;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -113,6 +114,7 @@ public class TitleRepository {
                 mTitleDao.insert(titleModel);
             }
         });
+        DropboxRemoteDb.saveDb();
     }
 
     public void deleteTitle(final String titleName) {
@@ -122,6 +124,7 @@ public class TitleRepository {
                 mTitleDao.deleteTitle(titleName);
             }
         });
+        DropboxRemoteDb.saveDb();
     }
 
 

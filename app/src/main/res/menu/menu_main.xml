@@ -9,8 +9,7 @@
         android:hint="@string/dropbox_sync"
         android:title="@string/dropbox_sync"
         android:icon="@drawable/dropbox"
-        app:showAsAction="always">
-    </item>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/titlesButton"

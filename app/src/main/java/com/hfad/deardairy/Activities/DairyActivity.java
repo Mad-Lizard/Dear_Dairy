@@ -1,12 +1,7 @@
 package com.hfad.deardairy.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.work.Constraints;
-import androidx.work.NetworkType;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -22,8 +17,6 @@ import android.widget.Toast;
 
 import com.hfad.deardairy.Db.Models.DataModel;
 import com.hfad.deardairy.Db.ViewModels.DataViewModel;
-import com.hfad.deardairy.Db.WorkManager.BackupWorker;
-import com.hfad.deardairy.Db.WorkManager.SaveRemoteDb;
 import com.hfad.deardairy.Dropbox_access.DropboxActivity;
 import com.hfad.deardairy.R;
 import com.hfad.deardairy.Db.Models.TitleModel;
@@ -154,13 +147,11 @@ public class DairyActivity extends DropboxActivity implements AdapterView.OnItem
             model.setText(textInput.getText().toString());
             model.setDate(dateTitle);
             dataViewModel.insert(model);
-            SaveRemoteDb.saveDb();
             Toast toast = Toast.makeText(this, "Запись сохранена", Toast.LENGTH_LONG);
             toast.show();
         } else {
             current.setText(textInput.getText().toString());
             dataViewModel.update(current);
-            SaveRemoteDb.saveDb();
             Toast toast = Toast.makeText(this, "Запись обновлена", Toast.LENGTH_LONG);
             toast.show();
         }
