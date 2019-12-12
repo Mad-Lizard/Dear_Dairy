@@ -12,12 +12,12 @@ import java.util.List;
 @Dao
 public interface TitleDao {
     @Insert
-    void insert(TitleModel titleModel);
+    long insert(TitleModel titleModel);
 
     @Query("DELETE FROM titles WHERE name = :title")
     void deleteTitle(String title);
 
-    @Query("SELECT * FROM titles WHERE name = :title")
+    @Query("SELECT * FROM titles WHERE name = :title COLLATE NOCASE")
     TitleModel getTitle(String title);
 
     @Query("SELECT title_id FROM titles WHERE name = :title")

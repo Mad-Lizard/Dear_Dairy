@@ -1,7 +1,6 @@
 package com.hfad.deardairy.Db.Repositories;
 
 import android.app.Application;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -27,23 +26,23 @@ public class TitleRepository {
     private static TitleModel titleModel;
 
     //Constructor for class, where we get access to db throw DAO
-    //Queries that return LiveData can be execute through AsyncTask, because LiveData waits for complete results
-    //Other queries perform through Executor and Future, where I can use method get() to wait for complete results
+    //Queries perform through Executor and Future, where I can use method get() to wait for complete results
     public TitleRepository(Application application) {
         DatabaseHelper db = DatabaseHelper.getDatabase(application);
         mTitleDao = db.getTitleDao();
     }
 
     public LiveData<List<TitleModel>> getAllTitles() {
-        new AllTitlesAsyncTask().doInBackground();
-        return mAllTitles; }
-
-    private static class AllTitlesAsyncTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            mAllTitles = mTitleDao.getTitles();
-            return null;
-        }
+        Future<LiveData<List<TitleModel>>> future = DatabaseHelper.databaseExecutor
+                .submit(new Callable<LiveData<List<TitleModel>>>() {
+            @Override
+            public LiveData<List<TitleModel>> call() throws Exception {
+                mAllTitles = mTitleDao.getTitles();
+                return mAllTitles;
+            }
+        });
+        performFuture(future);
+        return mAllTitles;
     }
 
     public List<String> getReservedTitle() {
@@ -107,14 +106,24 @@ public class TitleRepository {
         return titlesCount;
     }
 
-    public void insert(final TitleModel titleModel){
-        DatabaseHelper.databaseExecutor.execute(new Runnable() {
+    public Boolean insert(final TitleModel titleModel){
+        Future<Boolean>future = DatabaseHelper.databaseExecutor.submit(new Callable<Boolean>() {
             @Override
-            public void run() {
-                mTitleDao.insert(titleModel);
+            public Boolean call() throws Exception {
+                if(mTitleDao.insert(titleModel) != -1) {
+                    DropboxRemoteDb.saveDb();
+                    return true;
+                } else {
+                    return false;
+                }
             }
         });
-        DropboxRemoteDb.saveDb();
+        try {
+            return future.get();
+        } catch (Exception e) {
+            Log.e("Execption", e.toString());
+            return false;
+        }
     }
 
     public void deleteTitle(final String titleName) {

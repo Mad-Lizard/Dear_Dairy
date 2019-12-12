@@ -28,30 +28,32 @@ public class TitleViewModel extends AndroidViewModel {
     }
 
     public int getTitleId(String titleName) {
-        int titleId = mTitleRepository.getTitleId(titleName);
-        return titleId;
+        return mTitleRepository.getTitleId(titleName);
     }
 
     public int getTitlesCount() {
-        int titlesCount = mTitleRepository.getCountTitles();
-        return titlesCount;
+        return mTitleRepository.getCountTitles();
     }
 
     public TitleModel getTitle(String titleName) {
-        TitleModel titleModel = mTitleRepository.getTitle(titleName);
-        return titleModel;
+        return mTitleRepository.getTitle(titleName);
     }
 
     public List<String> getTitleNames() {
-        List<String> titleNames = mTitleRepository.getTitleNames();
-        return titleNames;
+        return mTitleRepository.getTitleNames();
     }
 
     public List<String> getReservedTitle() {
-        List<String> reservedTitle = mTitleRepository.getReservedTitle();
-        return reservedTitle;
+        return mTitleRepository.getReservedTitle();
     }
-    public void insert(TitleModel titleModel) {mTitleRepository.insert(titleModel);}
+
+    public Boolean insert(TitleModel titleModel) {
+        if(mTitleRepository.insert(titleModel)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public void deleteTitle(String titleName) {mTitleRepository.deleteTitle(titleName);}
 }

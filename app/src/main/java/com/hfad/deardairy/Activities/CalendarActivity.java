@@ -19,39 +19,24 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.dropbox.core.DbxException;
 import com.dropbox.core.android.Auth;
 import com.dropbox.core.v2.DbxClientV2;
-import com.dropbox.core.v2.files.FileMetadata;
-import com.dropbox.core.v2.files.UploadErrorException;
 import com.hfad.deardairy.Db.Models.DataModel;
 import com.hfad.deardairy.Db.ViewModels.DataViewModel;
-import com.hfad.deardairy.Db.DatabaseHelper;
 import com.hfad.deardairy.Db.WorkManager.DropboxRemoteDb;
 import com.hfad.deardairy.Dropbox_access.DropboxActivity;
-import com.hfad.deardairy.Dropbox_access.DropboxClientFactory;
 import com.hfad.deardairy.Dropbox_access.GetDropboxAccount;
-import com.hfad.deardairy.Dropbox_access.GetDropboxFile;
 import com.hfad.deardairy.R;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
@@ -59,18 +44,15 @@ import static java.util.Calendar.YEAR;
 public class CalendarActivity extends DropboxActivity {
 
     MaterialCalendarView calendarView;
-    Calendar calendar;
     private boolean switchEdit;
     private String monthTitle;
+    private Calendar calendar;
     HashSet<Date> datesOfMonth = new HashSet<>();
-    String accessToken;
-    DbxClientV2 client;
     private static final int PERMISSION_REQUEST_CODE = 100;
 
     public CalendarActivity() {
         switchEdit = true;
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,15 +62,14 @@ public class CalendarActivity extends DropboxActivity {
         calendarView = findViewById(R.id.calendarView);
         calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_MULTIPLE);
 
-        if (savedInstanceState != null) {
-            accessToken = savedInstanceState.getString("access-token");
-        }
+//        if (savedInstanceState != null) {
+//            accessToken = savedInstanceState.getString("access-token");
+//        }
 
         calendar = Calendar.getInstance();
         int month = calendar.get(MONTH)+1;
         int year = calendar.get(YEAR);
         monthTitle = String.valueOf("%"+month+"-"+year);
-        datesOfMonth.add(calendar.getTime());
 
         datesOfMonth = getDatasDateForMonth();
         setDatasDateForMonth(datesOfMonth);
@@ -116,6 +97,7 @@ public class CalendarActivity extends DropboxActivity {
                 int year = date.getYear();
                 monthTitle = String.valueOf("%"+month+"-"+year);
                 datesOfMonth = getDatasDateForMonth();
+                Log.v("dateMonth", datesOfMonth.toString());
                 setDatasDateForMonth(datesOfMonth);
             }
         });
@@ -164,6 +146,9 @@ public class CalendarActivity extends DropboxActivity {
 
     public HashSet<Date> getDatasDateForMonth() {
         datesOfMonth.clear();
+        //add current date to selected dates
+        datesOfMonth.add(calendar.getTime());
+        //add dates with data for this month
         DataViewModel dataViewModel = new DataViewModel(getApplication());
         List<DataModel> dataModels = dataViewModel.getDatasForMonth(monthTitle);
         for(int i = 0; i < dataModels.size(); i++) {

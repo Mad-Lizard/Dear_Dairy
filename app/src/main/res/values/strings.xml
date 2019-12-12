@@ -15,5 +15,6 @@
     <string name="backup_file_name">backup-dairy.db</string>
     <string name="switch_main">Редактирование/просмотр</string>
     <string name="dropbox_hello">Вы успешно вошли в свой аккаунт и синхронизоровали данные.</string>
+    <string name="title_already_exists">Такая тема существует.</string>
 
 </resources>

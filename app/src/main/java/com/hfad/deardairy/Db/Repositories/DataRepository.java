@@ -1,7 +1,6 @@
 package com.hfad.deardairy.Db.Repositories;
 
 import android.app.Application;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -20,8 +19,8 @@ import java.util.concurrent.Future;
 public class DataRepository {
 
     private static DataDao mDataDao;
-    private LiveData<List<DataModel>> mAllTitleDatas;
-    private LiveData<List<DataWithTitle>> mAllDateDatasWithTitles;
+    private static LiveData<List<DataModel>> mAllTitleDatas;
+    private static LiveData<List<DataWithTitle>> mAllDateDatasWithTitles;
     private static List<DataModel> mAllDatasForMonth;
     private DataModel modelByTitleAndDate;
 
@@ -48,17 +47,16 @@ public class DataRepository {
     }
 
     public LiveData<List<DataModel>> getAllTitleDatas(final int titleId) {
-       new AllTitleDatasAsynkTask().doInBackground(titleId);
-       return mAllTitleDatas;
-    }
-
-    private class AllTitleDatasAsynkTask extends AsyncTask<Integer, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Integer... integers) {
-            int titleId = integers[0];
-            mAllTitleDatas = mDataDao.getByTitle(titleId);
-            return null;
-        }
+        Future<LiveData<List<DataModel>>> future = DatabaseHelper.databaseExecutor
+                .submit(new Callable<LiveData<List<DataModel>>>() {
+                    @Override
+                    public LiveData<List<DataModel>> call() throws Exception {
+                        mAllTitleDatas = mDataDao.getByTitle(titleId);
+                        return mAllTitleDatas;
+                    }
+                });
+        performFuture(future);
+        return mAllTitleDatas;
     }
 
     public List<DataModel> getAllDatasForMonth(final String monthTitle) {
@@ -75,19 +73,17 @@ public class DataRepository {
         return mAllDatasForMonth;
     }
 
-
     public LiveData<List<DataWithTitle>> getAllDateDatasWithTitles(final String date) {
-        new AllDateDatasWithTitleAsyncTask().doInBackground(date);
+        Future<LiveData<List<DataWithTitle>>> future = DatabaseHelper.databaseExecutor
+                .submit(new Callable<LiveData<List<DataWithTitle>>>() {
+                    @Override
+                    public LiveData<List<DataWithTitle>> call() throws Exception {
+                        mAllDateDatasWithTitles = mDataDao.getByDateWithTitle(date);
+                        return mAllDateDatasWithTitles;
+                    }
+                });
+        performFuture(future);
         return mAllDateDatasWithTitles;
-    }
-
-    private class AllDateDatasWithTitleAsyncTask extends AsyncTask<String, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(String... strings) {
-            String date = strings[0];
-            mAllDateDatasWithTitles = mDataDao.getByDateWithTitle(date);
-            return null;
-        }
     }
 
     public void insert(final DataModel dataModel) {

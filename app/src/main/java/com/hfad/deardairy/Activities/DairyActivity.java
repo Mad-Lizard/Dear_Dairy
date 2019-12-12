@@ -32,8 +32,8 @@ public class DairyActivity extends DropboxActivity implements AdapterView.OnItem
     private String dateTitle;
     private Button saveButton;
     private List<String> titles;
-    DataViewModel dataViewModel;
-    TitleViewModel titleViewModel;
+    DataViewModel mDataViewModel;
+    TitleViewModel mTitleViewModel;
     DataModel current;
     ClipboardManager clipboard;
 
@@ -42,8 +42,8 @@ public class DairyActivity extends DropboxActivity implements AdapterView.OnItem
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dairy);
-        dataViewModel = ViewModelProviders.of(this).get(DataViewModel.class);
-        titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
+        mDataViewModel = ViewModelProviders.of(this).get(DataViewModel.class);
+        mTitleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
         textInput = findViewById(R.id.text_input_field);
 
         clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
@@ -103,10 +103,9 @@ public class DairyActivity extends DropboxActivity implements AdapterView.OnItem
     }
 
     private void loadTitleSpinner() {
-
-        titles = titleViewModel.getTitleNames();
+        titles = mTitleViewModel.getTitleNames();
         if (titles.size() < 1) {
-            titles = titleViewModel.getReservedTitle();
+            titles = mTitleViewModel.getReservedTitle();
         }
         ArrayAdapter<String> titleAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item,
@@ -118,10 +117,10 @@ public class DairyActivity extends DropboxActivity implements AdapterView.OnItem
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String title = parent.getItemAtPosition(position).toString();
-        TitleModel titleModel = titleViewModel.getTitle(title);
+        TitleModel titleModel = mTitleViewModel.getTitle(title);
         titleId = titleModel.getTitleId();
         //set text to title if exists
-        current = dataViewModel.getByTitleAndDate(titleId, dateTitle);
+        current = mDataViewModel.getByTitleAndDate(titleId, dateTitle);
         if(current != null) {
             String dairyText = current.getText();
             textInput.setText(dairyText);
@@ -131,12 +130,11 @@ public class DairyActivity extends DropboxActivity implements AdapterView.OnItem
             saveButton.setText("Сохранить");
         }
     }
-
-
+    
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
         String title = adapterView.getItemAtPosition(0).toString();
-        TitleModel titleModel = titleViewModel.getTitle(title);
+        TitleModel titleModel = mTitleViewModel.getTitle(title);
         titleId = titleModel.getTitleId();
     }
 
@@ -146,12 +144,12 @@ public class DairyActivity extends DropboxActivity implements AdapterView.OnItem
             model.setTitle(titleId);
             model.setText(textInput.getText().toString());
             model.setDate(dateTitle);
-            dataViewModel.insert(model);
+            mDataViewModel.insert(model);
             Toast toast = Toast.makeText(this, "Запись сохранена", Toast.LENGTH_LONG);
             toast.show();
         } else {
             current.setText(textInput.getText().toString());
-            dataViewModel.update(current);
+            mDataViewModel.update(current);
             Toast toast = Toast.makeText(this, "Запись обновлена", Toast.LENGTH_LONG);
             toast.show();
         }

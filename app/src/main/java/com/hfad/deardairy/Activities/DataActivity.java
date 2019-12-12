@@ -79,9 +79,9 @@ public class DataActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new DataAdapter.onItemClickListener() {
 
             @Override
-            public void onItemClick(String title) {
+            public void onItemClick(String title, String date) {
                 Intent intent = new Intent(getApplicationContext(), DairyActivity.class);
-                intent.putExtra("date", dateTitle);
+                intent.putExtra("date", date);
                 intent.putExtra("title", title);
                 startActivity(intent);
             }

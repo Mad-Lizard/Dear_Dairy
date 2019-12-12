@@ -22,7 +22,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DateDatasViewH
     private onItemClickListener mListener;
 
     public interface onItemClickListener {
-        void onItemClick(String title);
+        void onItemClick(String title, String date);
         void onDeleteClick(String dateit, String title);
         void onCopyClick(String text);
     }
@@ -44,8 +44,11 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DateDatasViewH
                 public void onClick(View view) {
                     if(listener != null) {
                         String titleName = titleView.getText().toString();
+                        String date = dateView.getText().toString();
                         if(titleName != null) {
-                            listener.onItemClick(titleName);
+                            if(date != null) {
+                                listener.onItemClick(titleName, date);
+                            }
                         }
                     }
                 }

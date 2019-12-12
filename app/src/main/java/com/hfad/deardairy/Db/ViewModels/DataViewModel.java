@@ -13,9 +13,6 @@ import java.util.List;
 
 public class DataViewModel extends AndroidViewModel {
     private static DataRepository mDataRepository;
-    private LiveData<List<DataModel>> mAllTitleDatas;
-    private LiveData<List<DataWithTitle>> mAllDateDatasWithTitles;
-    private DataModel modelByTitleAndDate;
 
     public DataViewModel(Application application) {
         super(application);
@@ -23,28 +20,19 @@ public class DataViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<DataWithTitle>> getDatasWithTitle(int titleId) {
-        LiveData<List<DataWithTitle>> mDatasWithTitle = mDataRepository.getByTitleWithTitle(titleId);
-        return mDatasWithTitle;
-    }
-
-    LiveData<List<DataModel>> getTitleDatas(int titleId) {
-        mAllTitleDatas = mDataRepository.getAllTitleDatas(titleId);
-        return mAllTitleDatas;
+        return mDataRepository.getByTitleWithTitle(titleId);
     }
 
     public LiveData<List<DataWithTitle>> getDateDatasWithTitle(String date) {
-        mAllDateDatasWithTitles = mDataRepository.getAllDateDatasWithTitles(date);
-        return mAllDateDatasWithTitles;
+        return mDataRepository.getAllDateDatasWithTitles(date);
     }
 
     public DataModel getByTitleAndDate(int titleId, String date) {
-        modelByTitleAndDate = mDataRepository.getModelByTitleAndDate(titleId, date);
-        return modelByTitleAndDate;
+        return mDataRepository.getModelByTitleAndDate(titleId, date);
     }
 
     public List<DataModel> getDatasForMonth(String monthDate) {
-        List<DataModel> mDatasForMonth = mDataRepository.getAllDatasForMonth(monthDate);
-        return mDatasForMonth;
+        return mDataRepository.getAllDatasForMonth(monthDate);
    }
 
     public void insert(DataModel dataModel) {
