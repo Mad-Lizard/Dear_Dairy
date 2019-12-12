@@ -130,7 +130,7 @@ public class DairyActivity extends DropboxActivity implements AdapterView.OnItem
             saveButton.setText("Сохранить");
         }
     }
-    
+
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
         String title = adapterView.getItemAtPosition(0).toString();
