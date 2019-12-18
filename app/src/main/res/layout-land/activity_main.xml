@@ -19,22 +19,27 @@
         android:layout_width="49dp"
         android:layout_height="49dp"
         android:layout_toStartOf="@id/titlesButton"
-        android:layout_margin="9dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
         android:background="@drawable/rounded_bg"
         android:layout_alignParentTop="true"
         android:src="@drawable/dropbox"
+        android:padding="3dp"
+        android:scaleType="fitCenter"
         android:onClick="onDropboxClick"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/titlesButton"
-        android:layout_width="wrap_content"
-        android:layout_height="59dp"
-        android:text="@string/title_selection"
-        android:backgroundTint="@color/colorPrimary"
-        android:textColor="@android:color/white"
+        android:layout_width="49dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:src="@drawable/ic_tag"
+        android:scaleType="fitCenter"
+        android:padding="6dp"
+        android:background="@drawable/rounded_bg"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="4dp"
         android:onClick="onTitleButtonClick"/>
 
 </RelativeLayout>

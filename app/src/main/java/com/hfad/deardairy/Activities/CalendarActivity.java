@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -73,12 +74,10 @@ public class CalendarActivity extends DropboxActivity {
         int month = calendar.get(MONTH)+1;
         int year = calendar.get(YEAR);
         monthTitle = String.valueOf("%"+month+"-"+year);
-
+        //save date for DataActivity
         int day = calendar.get(DAY_OF_MONTH);
         String currentDate = String.valueOf(day+"-"+month+"-"+year);
         preferences.edit().putString("date", currentDate).apply();
-        datesOfMonth = getDatasDateForMonth();
-        setDatasDateForMonth(datesOfMonth);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
@@ -102,6 +101,7 @@ public class CalendarActivity extends DropboxActivity {
                 Intent intent = new Intent(widget.getContext(), DataActivity.class);
                 intent.putExtra("date", (String) dateTitle);
                 startActivity(intent);
+                calendarView.setDateSelected(date, false);
             }
         });
     }
@@ -141,6 +141,7 @@ public class CalendarActivity extends DropboxActivity {
                 e.printStackTrace();
             }
         }
+        Log.v("dates", datesOfMonth.toString());
         return datesOfMonth;
     }
 

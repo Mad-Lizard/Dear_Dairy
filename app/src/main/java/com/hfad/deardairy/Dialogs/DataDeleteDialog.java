@@ -1,6 +1,5 @@
 package com.hfad.deardairy.Dialogs;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -8,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
@@ -35,7 +35,7 @@ public class DataDeleteDialog extends AppCompatDialogFragment {
         final DataViewModel mDataViewModel = ViewModelProviders.of(this).get(DataViewModel.class);
 
         builder.setView(view)
-                .setTitle("Удалить запись")
+              //  .setTitle("Удалить запись")
                 .setNegativeButton("Отменить", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
