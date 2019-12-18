@@ -11,16 +11,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CompoundButton;
-import android.widget.Switch;
+import android.view.View;
 import android.widget.Toast;
 
 import com.dropbox.core.android.Auth;
-import com.dropbox.core.v2.DbxClientV2;
 import com.hfad.deardairy.Db.Models.DataModel;
 import com.hfad.deardairy.Db.ViewModels.DataViewModel;
 import com.hfad.deardairy.Db.WorkManager.DropboxRemoteDb;
@@ -38,57 +34,54 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
 
 public class CalendarActivity extends DropboxActivity {
 
     MaterialCalendarView calendarView;
-    private boolean switchEdit;
     private String monthTitle;
     private Calendar calendar;
     HashSet<Date> datesOfMonth = new HashSet<>();
     private static final int PERMISSION_REQUEST_CODE = 100;
-
-    public CalendarActivity() {
-        switchEdit = true;
-    }
+    SharedPreferences preferences;
+    Boolean isSynced = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Sync with Dropbox(download backup), if we already logged in
+        preferences = getSharedPreferences("dropbox", MODE_PRIVATE);
+            //download backup only once during lifecycle of CalendarActivity
+        try {
+            isSynced = savedInstanceState.getBoolean("isSynced", false);
+        } catch (Exception e) {
+
+        }
+        Boolean dropboxSync = preferences.getBoolean("dropboxSync", false);
+        if (dropboxSync && !isSynced) {
+            DropboxRemoteDb.downloadDb();
+        }
         //Get CalendarView
         calendarView = findViewById(R.id.calendarView);
         calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_MULTIPLE);
-
-//        if (savedInstanceState != null) {
-//            accessToken = savedInstanceState.getString("access-token");
-//        }
-
         calendar = Calendar.getInstance();
+        //add dates with data for this month
         int month = calendar.get(MONTH)+1;
         int year = calendar.get(YEAR);
         monthTitle = String.valueOf("%"+month+"-"+year);
 
+        int day = calendar.get(DAY_OF_MONTH);
+        String currentDate = String.valueOf(day+"-"+month+"-"+year);
+        preferences.edit().putString("date", currentDate).apply();
         datesOfMonth = getDatasDateForMonth();
         setDatasDateForMonth(datesOfMonth);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-
-        Switch switchMain = findViewById(R.id.switch_main);
-        switchMain.setText(R.string.switch_main);
-        switchMain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isChecked) {
-                    switchEdit = true;
-                } else {
-                    switchEdit = false;
-                }
-            }
-        });
 
         calendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
             @Override
@@ -97,7 +90,6 @@ public class CalendarActivity extends DropboxActivity {
                 int year = date.getYear();
                 monthTitle = String.valueOf("%"+month+"-"+year);
                 datesOfMonth = getDatasDateForMonth();
-                Log.v("dateMonth", datesOfMonth.toString());
                 setDatasDateForMonth(datesOfMonth);
             }
         });
@@ -107,16 +99,9 @@ public class CalendarActivity extends DropboxActivity {
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 int month = date.getMonth()+1;
                 String dateTitle = String.valueOf(date.getDay()+"-"+month+"-"+date.getYear());
-                if(switchEdit) {
-                    Intent intent = new Intent(widget.getContext(), DairyActivity.class);
-                    intent.putExtra("date", (String) dateTitle);
-                    startActivity(intent);
-                    calendarView.setDateSelected(date, false);
-                } else {
-                    Intent intent = new Intent(widget.getContext(), DataActivity.class);
-                    intent.putExtra("date", (String) dateTitle);
-                    startActivity(intent);
-                }
+                Intent intent = new Intent(widget.getContext(), DataActivity.class);
+                intent.putExtra("date", (String) dateTitle);
+                startActivity(intent);
             }
         });
     }
@@ -124,11 +109,7 @@ public class CalendarActivity extends DropboxActivity {
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(CalendarActivity.this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if(result == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
+        return result == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermission() {
@@ -148,7 +129,6 @@ public class CalendarActivity extends DropboxActivity {
         datesOfMonth.clear();
         //add current date to selected dates
         datesOfMonth.add(calendar.getTime());
-        //add dates with data for this month
         DataViewModel dataViewModel = new DataViewModel(getApplication());
         List<DataModel> dataModels = dataViewModel.getDatasForMonth(monthTitle);
         for(int i = 0; i < dataModels.size(); i++) {
@@ -171,6 +151,12 @@ public class CalendarActivity extends DropboxActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("isSynced", true);
+    }
+
+    @Override
     protected void onPostResume() {
         super.onPostResume();
         datesOfMonth = getDatasDateForMonth();
@@ -188,32 +174,48 @@ public class CalendarActivity extends DropboxActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.titlesButton:
-                    Intent intent = new Intent(this, TitleSelectionActivity.class);
-                    this.startActivity(intent);
+                    startTitleSelectionActivity();
                     break;
                     default:
                     return super.onOptionsItemSelected(item);
                 case R.id.dropbox_button:
-                    if(!hasToken()) {
-                        Auth.startOAuth2Authentication(getApplicationContext(), getString(R.string.app_key));
-                    }
-                    if(Build.VERSION.SDK_INT >= 23) {
-                        if (!checkPermission()) {
-                            requestPermission();
-                        }
-                    }
-                    DropboxRemoteDb.downloadDb();
-                    String name = GetDropboxAccount.getUserName();
-                    if (name != null) {
-                        Toast.makeText(this, R.string.dropbox_hello, Toast.LENGTH_LONG).show();
-                    }
-                    Boolean dropboxSync = true;
-                    SharedPreferences preferences = getSharedPreferences("dropbox", MODE_PRIVATE);
-                    preferences.edit().putBoolean("dropboxSync", dropboxSync).apply();
-                    //collect dates with data for new db
-                    datesOfMonth = getDatasDateForMonth();
-                    setDatasDateForMonth(datesOfMonth);
+                    syncWithDropboxButton();
             }
         return  true;
+    }
+
+    //These methods are only for landscape orientation, where we use buttons instead of toolbar.
+    public void onDropboxClick(View view) {
+        syncWithDropboxButton();
+    }
+
+    public void onTitleButtonClick(View view) {
+        startTitleSelectionActivity();
+    }
+
+    private void startTitleSelectionActivity() {
+        Intent intent = new Intent(this, TitleSelectionActivity.class);
+        this.startActivity(intent);
+    }
+
+    private void syncWithDropboxButton() {
+        if(!hasToken()) {
+            Auth.startOAuth2Authentication(getApplicationContext(), getString(R.string.app_key));
+        }
+        if(Build.VERSION.SDK_INT >= 23) {
+            if (!checkPermission()) {
+                requestPermission();
+            }
+        }
+        DropboxRemoteDb.downloadDb();
+        String name = GetDropboxAccount.getUserName();
+        if (name != null) {
+            Toast.makeText(this, R.string.dropbox_hello, Toast.LENGTH_LONG).show();
+        }
+        Boolean dropboxSync = true;
+        preferences.edit().putBoolean("dropboxSync", dropboxSync).apply();
+        //collect dates with data for new db
+        datesOfMonth = getDatasDateForMonth();
+        setDatasDateForMonth(datesOfMonth);
     }
 }

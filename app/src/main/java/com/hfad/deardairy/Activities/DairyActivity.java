@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,6 +23,7 @@ import com.hfad.deardairy.R;
 import com.hfad.deardairy.Db.Models.TitleModel;
 import com.hfad.deardairy.Db.ViewModels.TitleViewModel;
 
+import java.util.Date;
 import java.util.List;
 
 public class DairyActivity extends DropboxActivity implements AdapterView.OnItemSelectedListener {
@@ -82,8 +84,12 @@ public class DairyActivity extends DropboxActivity implements AdapterView.OnItem
                 }
             }
         });
-
-        dateTitle = getIntent().getExtras().get("date").toString();
+        try {
+            dateTitle = getIntent().getExtras().get("date").toString();
+        } catch (Exception e) {
+            SharedPreferences preferences = getSharedPreferences("dropbox", MODE_PRIVATE);
+            dateTitle = preferences.getString("date", null);
+        }
 
         titleSpinner = findViewById(R.id.title_spinner);
         titleSpinner.setOnItemSelectedListener(this);
@@ -153,7 +159,6 @@ public class DairyActivity extends DropboxActivity implements AdapterView.OnItem
             Toast toast = Toast.makeText(this, "Запись обновлена", Toast.LENGTH_LONG);
             toast.show();
         }
-
         finish();
     }
 }

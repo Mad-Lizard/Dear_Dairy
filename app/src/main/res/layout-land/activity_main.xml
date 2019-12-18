@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/landscape_main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="start">
+
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="16sp"
+        app:mcv_selectionColor="@color/colorPrimary" />
+
+    <ImageButton
+        android:id="@id/dropbox_button"
+        android:layout_width="49dp"
+        android:layout_height="49dp"
+        android:layout_toStartOf="@id/titlesButton"
+        android:layout_margin="9dp"
+        android:background="@drawable/rounded_bg"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/dropbox"
+        android:onClick="onDropboxClick"/>
+
+    <Button
+        android:id="@+id/titlesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="59dp"
+        android:text="@string/title_selection"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="@android:color/white"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="4dp"
+        android:onClick="onTitleButtonClick"/>
+
+</RelativeLayout>

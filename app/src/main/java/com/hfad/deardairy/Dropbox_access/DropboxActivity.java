@@ -32,10 +32,6 @@ public abstract class DropboxActivity extends AppCompatActivity {
         } else {
             DropboxClientFactory.init(accessToken);
         }
-        Boolean dropboxSync = preferences.getBoolean("dropboxSync", false);
-        if (dropboxSync) {
-            DropboxRemoteDb.downloadDb();
-        }
     }
 
     public boolean hasToken() {

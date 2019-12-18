@@ -12,6 +12,7 @@ import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.hfad.deardairy.Adapters.DataAdapter;
@@ -44,8 +45,7 @@ public class DataActivity extends AppCompatActivity {
         if(getIntent().getExtras().get("title") != null) {
             titleName = (String)getIntent().getExtras().get("title");
             TitleViewModel titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
-            titleId = titleViewModel.getTitleId(titleName);
-            Log.v("intent", String.valueOf(titleId));
+            titleId = titleViewModel.getTitleId(titleName);    
         }
         buildRecyclerView();
     }
@@ -105,6 +105,17 @@ public class DataActivity extends AppCompatActivity {
                 toast.show();
             }
         });
+    }
+
+    public void onAddDataClick(View view) {
+        Intent dairyIntent = new Intent(getApplicationContext(), DairyActivity.class);
+        if(dateTitle != null){
+            dairyIntent.putExtra("date", dateTitle);
+        }
+        if(titleName != null) {
+            dairyIntent.putExtra("title", titleName);
+        }
+        startActivity(dairyIntent);
     }
 
     public void setNotification() {

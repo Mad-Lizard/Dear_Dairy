@@ -14,10 +14,7 @@ import com.hfad.deardairy.Db.DAO.TitleDao;
 import com.hfad.deardairy.Db.Models.DataModel;
 import com.hfad.deardairy.Db.Models.TitleModel;
 
-import org.eclipse.jetty.util.log.Log;
-
 import java.io.File;
-import java.nio.channels.FileChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 

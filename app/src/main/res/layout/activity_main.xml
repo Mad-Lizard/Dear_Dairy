@@ -19,14 +19,6 @@
         android:layout_height="wrap_content"
         app:mcv_selectionColor="@color/colorPrimary"/>
 
-    <Switch
-        android:id="@+id/switch_main"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:checked="true"
-        android:gravity="end"
-        android:padding="8dp"/>
-
     <TextView
         android:id="@+id/dropbox"
         android:layout_width="wrap_content"
