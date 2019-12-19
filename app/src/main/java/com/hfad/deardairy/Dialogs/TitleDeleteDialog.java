@@ -32,13 +32,11 @@ public class TitleDeleteDialog extends AppCompatDialogFragment {
         final String title = bundle.getString("title");
 
         titleView = view.findViewById(R.id.title_delete);
-
         titleView.setText(title);
-
         titleViewModel = ViewModelProviders.of(this).get(TitleViewModel.class);
 
         builder.setView(view)
-                .setTitle("Удалить тему дневника")
+                .setTitle("Удалить тему дневника?")
                 .setNegativeButton("Отменить", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

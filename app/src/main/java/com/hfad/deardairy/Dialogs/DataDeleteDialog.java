@@ -35,7 +35,6 @@ public class DataDeleteDialog extends AppCompatDialogFragment {
         final DataViewModel mDataViewModel = ViewModelProviders.of(this).get(DataViewModel.class);
 
         builder.setView(view)
-              //  .setTitle("Удалить запись")
                 .setNegativeButton("Отменить", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

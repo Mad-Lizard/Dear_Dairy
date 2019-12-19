@@ -18,5 +18,16 @@
         android:title="@string/title_selection"
         app:showAsAction="ifRoom"/>
 
+    <item
+        android:id="@+id/google_menu"
+        android:width="50dp"
+        android:title="Google"
+        android:icon="@drawable/google"
+        app:showAsAction="always">
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/google_button_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </item>
 
 </menu>

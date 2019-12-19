@@ -8,12 +8,6 @@
     <string name="title_hint">Их может быть на больше 7</string>
     <string name="app_key">s5nqtocq3s8y5zz</string>
     <string name="dropbox_sync">Синхронизировать с Dropbox</string>
-    <string name="dropbox_save">Сохранять на Dropbox</string>
-    <string name="dropbox_login">Войти в аккаунт Dropbox</string>
-    <string name="dropbox_backup">Сохранить данные</string>
-    <string name="dropbox_restore">Восстановить данные</string>
-    <string name="backup_file_name">backup-dairy.db</string>
-    <string name="switch_main">Редактирование/просмотр</string>
     <string name="dropbox_hello">Вы успешно вошли в свой аккаунт и синхронизоровали данные.</string>
     <string name="title_already_exists">Такая тема существует.</string>
     <string name="dairy_button">Добавить</string>
